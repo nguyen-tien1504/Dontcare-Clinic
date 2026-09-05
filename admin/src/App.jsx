@@ -9,6 +9,8 @@ import AllAppointments from "./pages/Admin/AllAppointments.jsx";
 import AddDoctor from "./pages/Admin/AddDoctor.jsx";
 import DoctorsList from "./pages/Admin/DoctorsList.jsx";
 import Sidebar from "./components/Sidebar.jsx";
+import SymptomRequests from "./pages/Admin/SymptomRequests.jsx";
+import UpdateDoctor from "./pages/Admin/UpdateDoctor.jsx";
 
 const App = () => {
   const { aToken } = useContext(AdminContext);
@@ -16,23 +18,46 @@ const App = () => {
   return aToken ? (
     <div className="bg-[F8F9FD]">
       <ToastContainer />
-      <Navbar/>
+      <Navbar />
       <div className="flex items-start">
-        <Sidebar/>
+        <Sidebar />
         <Routes>
-          <Route path="/" element={<></>}/>
-          <Route path="/admin-dashboard" element={<Dashboard/>}/>
-          <Route path="/all-appointments" element={<AllAppointments/>}/>
-          <Route path="/add-doctor" element={<AddDoctor/>}/>
-          <Route path="/doctor-list" element={<DoctorsList/>}/>
+          <Route
+            path="/"
+            element={<></>}
+          />
+          <Route
+            path="/admin-dashboard"
+            element={<Dashboard />}
+          />
+          <Route
+            path="/all-appointments"
+            element={<AllAppointments />}
+          />
+          <Route
+            path="/add-doctor"
+            element={<AddDoctor />}
+          />
+          <Route
+            path="/doctor-list"
+            element={<DoctorsList />}
+          />
+          <Route
+            path="/symptom-requests"
+            element={<SymptomRequests />}
+          />
+          <Route
+            path="/update-doctor/:docId"
+            element={<UpdateDoctor />}
+          />
         </Routes>
       </div>
     </div>
-    ) : (
-      <>
-        <Login />
-        <ToastContainer />
-      </>
-    )
-}
-export default App
+  ) : (
+    <>
+      <Login />
+      <ToastContainer />
+    </>
+  );
+};
+export default App;

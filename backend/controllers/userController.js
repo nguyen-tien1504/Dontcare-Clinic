@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
-
+import symptomRequestModel from "../models/symptomRequestModel.js";
 //API for registering the user
 
 const registerUser = async (req, res) => {
@@ -133,7 +133,6 @@ const bookAppointment = async (req, res) => {
   try {
     const { userId, docId, slotDate, slotTime } = req.body;
     const docData = await doctorModel.findById(docId).select("-password");
-
     if (!docData.available) {
       return res.json({
         success: false,
@@ -263,6 +262,62 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
+const createSymptomRequest = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const { symptoms, description, duration, severity } = req.body;
+
+    if (!Array.isArray(symptoms) || symptoms.length === 0) {
+      return res.json({
+        success: false,
+        message: "Please select at least one symptom",
+      });
+    }
+
+    const request = new symptomRequestModel({
+      userId,
+      symptoms,
+      description: description || "",
+      duration: duration || "",
+      severity: severity || "Mild",
+    });
+
+    await request.save();
+
+    res.json({
+      success: true,
+      message: "Symptom request submitted successfully",
+      request,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getMySymptomRequests = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const requests = await symptomRequestModel.find({ userId }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      requests,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export {
   registerUser,
   loginUser,
@@ -270,4 +325,7 @@ export {
   updateProfile,
   bookAppointment,
   listAppointment,
-  cancelAppointment};
+  cancelAppointment,
+  createSymptomRequest,
+  getMySymptomRequests,
+};

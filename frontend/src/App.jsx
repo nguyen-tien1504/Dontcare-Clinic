@@ -10,28 +10,60 @@ import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
-import {ToastContainer,toast} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import SymptomCheck from "./pages/SymptomCheck";
 
-const App=()=>{
-  return(
+const App = () => {
+  return (
     <div className="mx-4 sm:mx-[10%]">
-      <ToastContainer/>
+      <ToastContainer />
       <Navbar />
       <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/doctors' element={<Doctors/>} />
-        <Route path='/doctors/:speciality' element={<Doctors/>} />
-        <Route path='/login' element={<Login/>} />
-        <Route path='/about' element={<About/>} />
-        <Route path='/contact' element={<Contact/>} />
-        <Route path='/my-profile' element={<MyProfile/>} />
-        <Route path='/my-appointments' element={<MyAppointments/>} />
-        <Route path='/appointment/:docId' element={<Appointment/>} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
+        <Route
+          path="/doctors"
+          element={<Doctors />}
+        />
+        <Route
+          path="/doctors/:speciality"
+          element={<Doctors />}
+        />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+        <Route
+          path="/about"
+          element={<About />}
+        />
+        <Route
+          path="/contact"
+          element={<Contact />}
+        />
+        <Route
+          path="/my-profile"
+          element={<MyProfile />}
+        />
+        <Route
+          path="/my-appointments"
+          element={<MyAppointments />}
+        />
+        <Route
+          path="/appointment/:docId"
+          element={<Appointment />}
+        />
+        <Route
+          path="/symptom-check"
+          element={<SymptomCheck />}
+        />
       </Routes>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

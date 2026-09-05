@@ -3,7 +3,6 @@ import { AppContext } from "../context/AppContext";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { loadRazorpay } from "../utils/loadRazorpay";
 import { useEffect } from "react";
 import {useNavigate} from 'react-router-dom'
 
@@ -53,53 +52,6 @@ const MyAppointments = () => {
     }
   }
 
-  const initPay=async(order)=>{
-    try {
-      await loadRazorpay()
-    } catch (err) {
-      console.log('Razorpay load failed', err)
-      toast.error('Payment service failed to load')
-      return
-    }
-
-    const options={
-      key:import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount:order.amount,
-      currency:order.currency,
-      name:"Appointment Fees",
-      description:"Appointment Payment",
-      order_id:order.id,
-      receipt:order.receipt,
-      handler:async(response)=>{
-        try {
-          const { data } = await axios.post(backendBase + '/api/user/verifyRazorpay',response, { headers: { token } })
-
-          if(data.success){
-            getUserAppointments()
-            navigate('/my-appointments')
-          }
-        } catch (error) {
-          console.log(error)
-          toast.error(error.message)
-        }
-      }
-    }
-    const rzp=new window.Razorpay(options)
-    rzp.open()
-  }
-
-  const appointmentRazorpay=async(appointmentId)=>{
-    try {
-      const { data } = await axios.post(backendBase + '/api/user/payment-razorpay',{appointmentId}, { headers: { token } })
-      if(data.success){
-        initPay(data.order);
-      }
-      
-    } catch (error) {
-      
-    }
-  }
-
   useEffect(() => {
     if (token) {
       getUserAppointments()
@@ -127,7 +79,6 @@ const MyAppointments = () => {
             <div></div>
             <div className="flex flex-col gap-2 justify-end">
               {!item.cancelled && item.payment && <button className="sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-50">Paid</button>}
-              {!item.cancelled && !item.payment && <button onClick={()=>appointmentRazorpay(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white hover:shadow-md active:scale-95 transition-all duration-200">Pay Online</button>} 
               {!item.cancelled && <button onClick={()=>cancelAppointment(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white hover:shadow-md active:scale-95 transition-all duration-200">Cancel Appointment</button>}
               {item.cancelled && <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">Appointment Cancelled</button>}
             </div>
