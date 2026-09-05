@@ -19,8 +19,6 @@ const Appointment = () => {
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
-  console.log(slotIndex);
-  console.log(slotTime);
 
   const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id === docId);
@@ -153,7 +151,7 @@ const Appointment = () => {
             </p>
             <div className="flex items-center gap-2 text-sm mt-1 text-gray-600">
               <p>
-                {docInfo.degree} - {docInfo.speciality}
+                {docInfo.degree} - {docInfo.speciality.name}
               </p>
               <button className="py-0.5 px-2 border text-xs rounded-full">
                 {docInfo.experience}

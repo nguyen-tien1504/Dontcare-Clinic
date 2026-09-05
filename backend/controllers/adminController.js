@@ -107,7 +107,7 @@ const loginAdmin = async (req, res) => {
 //API for getting alal doctors information
 const allDoctors = async (req, res) => {
   try {
-    const doctors = await doctorModel.find({}).select("-password");
+    const doctors = await doctorModel.find({}).select("-password").populate('speciality');
     res.json({ success: true, doctors });
   } catch (error) {
     console.log(error);
@@ -262,7 +262,7 @@ const createAppointmentFromRequest = async (req, res) => {
       });
     }
 
-    const doctor = await doctorModel.findById(docId).select("-password");
+    const doctor = await doctorModel.findById(docId).select("-password").populate("speciality");
 
     if (!doctor) {
       return res.json({

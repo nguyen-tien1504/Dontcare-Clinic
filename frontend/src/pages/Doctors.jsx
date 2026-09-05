@@ -7,13 +7,13 @@ const Doctors = () => {
 
   const [filterDoc, setFilterDoc] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
-  const { doctors } = useContext(AppContext);
+  const { doctors, specialities } = useContext(AppContext);
 
   const navigate = useNavigate();
 
   const applyFilter = () => {
     if (speciality) {
-      setFilterDoc(doctors.filter((doc) => doc.speciality === speciality));
+      setFilterDoc(doctors.filter((doc) => doc.speciality._id === speciality));
     } else {
       setFilterDoc(doctors);
     }
@@ -33,60 +33,19 @@ const Doctors = () => {
         </button>
         <div
           className={`flex-col gap-4 text-sm text-gray-600 ${showFilter ? "flex" : "hidden sm:flex"}`}>
-          <p
-            onClick={() => {
-              speciality === "General physician"
-                ? navigate("/doctors")
-                : navigate("/doctors/General physician");
-            }}
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "General physician" ? "bg-indigo-100 text-black" : ""}`}>
-            General physician
-          </p>
-          <p
-            onClick={() => {
-              speciality === "Gynecologist"
-                ? navigate("/doctors")
-                : navigate("/doctors/Gynecologist");
-            }}
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Gynecologist" ? "bg-indigo-100 text-black" : ""}`}>
-            Gynecologist
-          </p>
-          <p
-            onClick={() => {
-              speciality === "Dermatologist"
-                ? navigate("/doctors")
-                : navigate("/doctors/Dermatologist");
-            }}
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Dermatologist" ? "bg-indigo-100 text-black" : ""}`}>
-            Dermatologist
-          </p>
-          <p
-            onClick={() => {
-              speciality === "Pediatricians"
-                ? navigate("/doctors")
-                : navigate("/doctors/Pediatricians");
-            }}
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Pediatricians" ? "bg-indigo-100 text-black" : ""}`}>
-            Pediatricians
-          </p>
-          <p
-            onClick={() => {
-              speciality === "Neurologist"
-                ? navigate("/doctors")
-                : navigate("/doctors/Neurologist");
-            }}
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Neurologist" ? "bg-indigo-100 text-black" : ""}`}>
-            Neurologist
-          </p>
-          <p
-            onClick={() => {
-              speciality === "Gastroenterologist"
-                ? navigate("/doctors")
-                : navigate("/doctors/Gastroenterologist");
-            }}
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Gastroenterologist" ? "bg-indigo-100 text-black" : ""}`}>
-            Gastroenterologist
-          </p>
+          {/* Specialities */}
+          {specialities.map((item, index) => (
+            <p
+              key={index}
+              onClick={() => {
+                speciality === item._id
+                  ? navigate("/doctors")
+                  : navigate(`/doctors/${item._id}`);
+              }}
+              className={` pl-3 py-1.5 pr-14 border border-gray-300 rounded transition-all cursor-pointer ${speciality === item._id ? "bg-indigo-100 text-black" : ""}`}>
+              {item.name}
+            </p>
+          ))}
         </div>
         <div className="w-full grid grid-cols-auto gap-4 gap-y-6">
           {filterDoc.map((item, index) => (
@@ -105,7 +64,7 @@ const Doctors = () => {
                   <p>Available</p>
                 </div>
                 <p className="text-gray-900 text-lg font-medium">{item.name}</p>
-                <p className="text-gray-600 text-sm">{item.speciality}</p>
+                <p className="text-gray-600 text-sm">{item.speciality.name}</p>
               </div>
             </div>
           ))}

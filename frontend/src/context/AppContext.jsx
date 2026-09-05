@@ -6,9 +6,10 @@ export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
   const currencySymbol = "$";
-  const backendUrl = "http://localhost:4000"; // Replace with your backend URL
+  const backendUrl = "http://localhost:4000";
   const backendBase = backendUrl ? String(backendUrl).replace(/\/$/, "") : "";
   const [doctors, setDoctors] = useState([]);
+  const [specialities, setSpecialities] = useState([]);
   const [token, setToken] = useState(
     localStorage.getItem("token") ? localStorage.getItem("token") : false,
   );
@@ -45,7 +46,17 @@ const AppContextProvider = (props) => {
       toast.error(error.message);
     }
   };
-
+  const getSpecialitiesData = async () => {
+    try {
+      const { data } = await axios.get(`${backendBase}/api/speciality/list`);
+      if (data.success) {
+        setSpecialities(data.specialities);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
   const value = {
     doctors,
     getDoctorsData,
@@ -57,10 +68,12 @@ const AppContextProvider = (props) => {
     userData,
     setUserData,
     loadUserProfileData,
+    specialities,
   };
 
   useEffect(() => {
     getDoctorsData();
+    getSpecialitiesData();
   }, []);
 
   useEffect(() => {

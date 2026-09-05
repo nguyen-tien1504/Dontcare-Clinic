@@ -12,7 +12,7 @@ const AdminContextProvider = (props) => {
   const [appointments, setAppointments] = useState([]);
   const [dashData, setDashData] = useState(false);
   const [symptomRequests, setSymptomRequests] = useState([]);
-
+  const [specialities, setSpecialities] = useState([]);
   const backendUrl = "http://localhost:4000";
   const backendBase = backendUrl ? String(backendUrl).replace(/\/$/, "") : "";
 
@@ -25,7 +25,21 @@ const AdminContextProvider = (props) => {
       );
       if (data.success) {
         setDoctors(data.doctors);
-        console.log(data.doctors);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const getAllSpecialities = async () => {
+    try {
+      const { data } = await axios.get(backendBase + "/api/speciality/list", {
+        headers: { aToken },
+      });
+      if (data.success) {
+        setSpecialities(data.specialities);
       } else {
         toast.error(data.message);
       }
@@ -185,6 +199,8 @@ const AdminContextProvider = (props) => {
     getSymptomRequests,
     reviewSymptomRequest,
     createAppointmentFromRequest,
+    specialities,
+    getAllSpecialities,
   };
 
   return <AdminContext.Provider value={value}>{props.children}</AdminContext.Provider>;

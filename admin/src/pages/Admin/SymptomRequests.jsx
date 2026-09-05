@@ -10,7 +10,10 @@ const SymptomRequests = () => {
     createAppointmentFromRequest,
     doctors,
     getAllDoctors,
+    specialities,
+    getAllSpecialities,
   } = useContext(AdminContext);
+  console.log(symptomRequests);
 
   const [selectedRequest, setSelectedRequest] = useState(null);
 
@@ -24,12 +27,13 @@ const SymptomRequests = () => {
     if (aToken) {
       getSymptomRequests();
       getAllDoctors();
+      getAllSpecialities();
     }
   }, [aToken]);
 
   useEffect(() => {
     if (selectedRequest) {
-      setSpeciality(selectedRequest.recommendedSpeciality || "");
+      setSpeciality(selectedRequest.recommendedSpeciality.name || "");
       setDoctorId(selectedRequest.recommendedDoctorId?._id || "");
       setAdminNote(selectedRequest.adminNote || "");
       setSlotDate("");
@@ -38,13 +42,13 @@ const SymptomRequests = () => {
   }, [selectedRequest]);
 
   const specialityList = useMemo(() => {
-    return [...new Set(doctors.map((doctor) => doctor.speciality))];
+    return [...new Set(doctors.map((doctor) => doctor.speciality.name))];
   }, [doctors]);
 
   const filteredDoctors = useMemo(() => {
     if (!speciality) return doctors;
 
-    return doctors.filter((doctor) => doctor.speciality === speciality);
+    return doctors.filter((doctor) => doctor.speciality._id === speciality);
   }, [doctors, speciality]);
 
   const selectedDoctor = useMemo(() => {
@@ -128,11 +132,12 @@ const SymptomRequests = () => {
       alert("Vui lòng chọn đầy đủ bác sĩ, ngày và giờ khám.");
       return;
     }
-
+    const [year, month, day] = slotDate.split("-");
+    const slotDateNew = `${+day}_${+month}_${year}`;
     await createAppointmentFromRequest(
       selectedRequest._id,
       doctorId,
-      slotDate,
+      slotDateNew,
       slotTime,
       adminNote,
       speciality,
@@ -380,11 +385,11 @@ const SymptomRequests = () => {
                       className="w-full mt-2 border rounded-lg px-3 py-3 outline-primary bg-white">
                       <option value="">Chọn chuyên khoa</option>
 
-                      {specialityList.map((item, index) => (
+                      {specialities.map((item, index) => (
                         <option
                           key={index}
-                          value={item}>
-                          {item}
+                          value={item._id}>
+                          {item.name}
                         </option>
                       ))}
                     </select>
@@ -400,13 +405,16 @@ const SymptomRequests = () => {
                       className="w-full mt-2 border rounded-lg px-3 py-3 outline-primary bg-white">
                       <option value="">Chọn bác sĩ</option>
 
-                      {filteredDoctors.map((doctor) => (
-                        <option
-                          key={doctor._id}
-                          value={doctor._id}>
-                          {doctor.name}
-                        </option>
-                      ))}
+                      {filteredDoctors.map(
+                        (doctor) =>
+                          doctor.speciality._id == speciality && (
+                            <option
+                              key={doctor._id}
+                              value={doctor._id}>
+                              {doctor.name}
+                            </option>
+                          ),
+                      )}
                     </select>
                   </div>
                 </div>
@@ -424,7 +432,7 @@ const SymptomRequests = () => {
                       <h3 className="font-medium text-gray-800">{selectedDoctor.name}</h3>
 
                       <p className="text-sm text-primary mt-1">
-                        {selectedDoctor.speciality}
+                        {selectedDoctor.speciality.name}
                       </p>
 
                       <p className="text-xs text-gray-500 mt-1">
